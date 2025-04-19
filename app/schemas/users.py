@@ -1,11 +1,5 @@
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import Any, Optional
-from datetime import datetime
+from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
-
-class StandardResponse(BaseModel):
-    message: Optional[str] = None
-    data: Optional[Any] = None
 
 class UserCreate(BaseModel):
     email: EmailStr = Field(..., example="email@example.com")
