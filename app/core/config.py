@@ -1,6 +1,8 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+
+    environment: str = "development"
     app_port: int
 
     postgres_user: str

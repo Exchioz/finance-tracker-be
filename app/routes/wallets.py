@@ -19,12 +19,6 @@ async def get_wallets(
 ):
     """
     Get all wallets of the current user.
-
-    Each wallet includes the following fields:
-    - **id**: Unique identifier of the wallet.
-    - **name**: Name of the wallet.
-    - **balance**: Current balance of the wallet.
-    - **currency**: Currency of the wallet.
     """
     return db.query(Wallet).filter(Wallet.user_id == user.id).all()
 
@@ -37,13 +31,16 @@ async def create_wallet(
 ):
     """
     Create a new wallet for the current user.
-
-    The wallet must include the following fields:
-    - **name**: Name of the wallet (required).
-    - **balance**: Initial balance of the wallet (optional, default is 0).
-    - **currency**: Currency of the wallet (optional, default is "IDR").
-    - **description**: Description of the wallet (optional).
     """
+
+    check_wallet = db.query(Wallet).filter(
+        Wallet.name == wallet.name,
+        Wallet.user_id == user.id
+    ).first()
+
+    if check_wallet:
+        raise HTTPException(status_code=400, detail="Wallet name already exists")
+    
     new_wallet = Wallet(**wallet.dict(), user_id=user.id)
 
     db.add(new_wallet)
@@ -54,3 +51,39 @@ async def create_wallet(
         message="Wallet created successfully",
         data=WalletResponse.from_orm(new_wallet)
     )
+
+
+# @router.get("/{wallet_id}", response_model=WalletResponse)
+# def get_wallet(wallet_id: UUID, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+#     wallet = db.query(Wallet).filter(Wallet.id == wallet_id, Wallet.user_id == user.id).first()
+#     if not wallet:
+#         raise HTTPException(404, detail="Wallet not found")
+#     return wallet
+
+# @router.put("/{wallet_id}", response_model=WalletResponse)
+# def update_wallet(wallet_id: UUID, data: WalletUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+#     wallet = db.query(Wallet).filter(Wallet.id == wallet_id, Wallet.user_id == user.id).first()
+#     if not wallet:
+#         raise HTTPException(404, detail="Wallet not found")
+    
+#     for key, value in data.dict(exclude_unset=True).items():
+#         setattr(wallet, key, value)
+
+#     db.commit()
+#     db.refresh(wallet)
+#     return wallet
+
+# @router.delete("/{wallet_id}")
+# def delete_wallet(wallet_id: UUID, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+#     wallet = db.query(Wallet).filter(Wallet.id == wallet_id, Wallet.user_id == user.id).first()
+#     if not wallet:
+#         raise HTTPException(404, detail="Wallet not found")
+#     db.delete(wallet)
+#     db.commit()
+#     return {"message": "Wallet deleted successfully"}
+
+# @router.get("/summary", response_model=WalletSummary)
+# def wallet_summary(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+#     wallets = db.query(Wallet).filter(Wallet.user_id == user.id).all()
+#     total = sum(w.balance for w in wallets)
+#     return WalletSummary(total_wallets=len(wallets), total_balance=total)

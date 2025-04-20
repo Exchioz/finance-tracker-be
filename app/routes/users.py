@@ -15,8 +15,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
-) -> User:
+):
     payload = verify_access_token(token)
+
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
@@ -32,8 +33,17 @@ def get_current_user(
     return user
 
 @router.post("/register", response_model=StandardResponse)
-async def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
+async def register_user(
+    user: UserCreate,
+    db: Session = Depends(get_db)
+):
+    if not user.email or not user.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    
+    db_user = db.query(User).filter(
+        User.email == user.email
+    ).first()
+    
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -53,11 +63,16 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     )
 
 @router.post("/login", response_model=StandardResponse)
-async def login_user(user: UserLogin, db: Session = Depends(get_db)):
+async def login_user(
+    user: UserLogin,
+    db: Session = Depends(get_db)
+):
     if not user.email or not user.password:
         raise HTTPException(status_code=400, detail="Email and password are required")
     
-    db_user = db.query(User).filter(User.email == user.email).first()
+    db_user = db.query(User).filter(
+        User.email == user.email
+    ).first()
     
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
