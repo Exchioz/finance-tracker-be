@@ -40,9 +40,7 @@ async def register_user(
     if not user.email or not user.password:
         raise HTTPException(status_code=400, detail="Email and password are required")
     
-    db_user = db.query(User).filter(
-        User.email == user.email
-    ).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
     
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -70,9 +68,7 @@ async def login_user(
     if not user.email or not user.password:
         raise HTTPException(status_code=400, detail="Email and password are required")
     
-    db_user = db.query(User).filter(
-        User.email == user.email
-    ).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
     
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
@@ -84,9 +80,6 @@ async def login_user(
         data=LoginData(access_token=token)
     )
 
-@router.get("/me", response_model=StandardResponse)
+@router.get("/me", response_model=UserResponse)
 def read_profile(current_user: User = Depends(get_current_user)):
-    return StandardResponse(
-        message="User profile fetched successfully",
-        data=UserResponse.from_orm(current_user)
-    )
+    return UserResponse.from_orm(current_user)

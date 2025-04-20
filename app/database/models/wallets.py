@@ -13,7 +13,7 @@ class Wallet(Base):
 
     name = Column(String(100), unique=True, nullable=False)
     balance = Column(Numeric(12, 2), default=0)
-    currency = Column(String(3), default="IDR")
+    currency = Column(String(5), default="IDR")
     description = Column(String, nullable=True)
 
     user = relationship("User", back_populates="wallets")

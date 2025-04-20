@@ -19,3 +19,21 @@ class WalletCreate(BaseModel):
     balance: Optional[Decimal] = 0
     currency: Optional[str] = "IDR"
     description: Optional[str] = None
+
+class WalletUpdate(BaseModel):
+    name: Optional[str] = None
+    balance: Optional[Decimal] = None
+    currency: Optional[str] = None
+    description: Optional[str] = None
+
+    model_config = {
+        "from_attributes": True
+    }
+
+class WalletSummary(BaseModel):
+    total_wallets: int
+    total_balance: Decimal
+    
+    model_config = {
+        "from_attributes": True
+    }
