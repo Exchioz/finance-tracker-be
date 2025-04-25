@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 from app.schemas.wallets import *
 from app.schemas.responses import StandardResponse
 from app.database.session import get_db
-from app.database.models.users import User
-from app.database.models.wallets import Wallet
+from app.database.models import User, Wallet
 from app.routes.users import get_current_user
 
 router = APIRouter()

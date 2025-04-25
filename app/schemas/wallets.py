@@ -10,9 +10,8 @@ class WalletResponse(BaseModel):
     currency: str
     description: Optional[str]
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        from_attributes = True
 
 class WalletCreate(BaseModel):
     name: str
@@ -26,14 +25,12 @@ class WalletUpdate(BaseModel):
     currency: Optional[str] = None
     description: Optional[str] = None
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        from_attributes = True
 
 class WalletSummary(BaseModel):
     total_wallets: int
     total_balance: Decimal
     
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        from_attributes = True

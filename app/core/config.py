@@ -22,6 +22,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-        orm_mode = True
-
+        from_attributes = True
+        
 settings = Settings()
