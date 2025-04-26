@@ -1,15 +1,17 @@
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
-from typing import Union
 
 from app.core.config import settings
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None]=None):
+def create_access_token(data: dict):
     to_encode = data.copy()
-    
-    expire = datetime.now(timezone.utc) + (
-        expires_delta or timedelta(minutes=settings.access_token_expire)
-    )
+
+    if settings.environment == "development":
+        to_encode.update({"is_dev": True})
+        expire = datetime.now(timezone.utc) + timedelta(days=7)
+    else:
+        to_encode.update({"is_dev": False})
+        expire = datetime.now(timezone.utc) + timedelta(hours=settings.access_token_expire)
 
     to_encode.update({"exp": expire})
 

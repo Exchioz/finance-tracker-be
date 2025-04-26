@@ -1,29 +1,22 @@
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import Any, Optional
-from datetime import datetime
+from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
 
-class StandardResponse(BaseModel):
-    message: Optional[str] = None
-    data: Optional[Any] = None
-
-class UserCreate(BaseModel):
-    email: EmailStr = Field(..., example="email@example.com")
-    password: str = Field(..., min_length=8, max_length=128, example="password123")
+class UserUpdate(BaseModel):
     full_name: str = Field(..., min_length=1, max_length=100, example="John Doe")
 
-class UserLogin(BaseModel):
-    email: EmailStr = Field(..., example="email@example.com")
-    password: str = Field(..., min_length=1, max_length=128, example="password123")
+class EmailUpdate(BaseModel):
+    new_email: EmailStr = Field(..., example="email@example.com")
+    confirm_new_email: EmailStr = Field(..., example="email@example.com")
+
+class PasswordUpdate(BaseModel):
+    current_password: str = Field(..., min_length=8, max_length=128, example="current_password123")
+    new_password: str = Field(..., min_length=8, max_length=128, example="new_password123")
+    confirm_new_password: str = Field(..., min_length=8, max_length=128, example="new_password123")
 
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
+    full_name: str
 
-    model_config = {
-        "from_attributes": True
-    }
-
-class LoginData(BaseModel):
-    access_token: str
-    token_type: str = 'bearer'
+    class Config:
+        from_attributes = True
