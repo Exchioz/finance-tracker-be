@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
 from uuid import UUID
 from decimal import Decimal
 
@@ -8,22 +7,22 @@ class WalletResponse(BaseModel):
     name: str
     balance: Decimal
     currency: str
-    description: Optional[str]
+    description: str | None = None
 
     class Config:
         from_attributes = True
 
 class WalletCreate(BaseModel):
     name: str
-    balance: Optional[Decimal] = 0
-    currency: Optional[str] = "IDR"
-    description: Optional[str] = None
+    balance: Decimal= 0
+    currency: str = "IDR"
+    description: str | None = None
 
 class WalletUpdate(BaseModel):
-    name: Optional[str] = None
-    balance: Optional[Decimal] = None
-    currency: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    balance: Decimal | None = None
+    currency: str | None = None
+    description: str | None = None
 
     class Config:
         from_attributes = True

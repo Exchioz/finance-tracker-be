@@ -14,13 +14,20 @@ router = APIRouter()
 @router.get("/", response_model=list[WalletResponse])
 async def get_wallets(
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
+    user: User = Depends(get_current_user),
+    limit: int = 20,
+    offset: int = 0
 ):
     """
     Get all wallets of the current user.
     """
-    return db.query(Wallet).filter(Wallet.user_id == user.id).all()
+    wallet = db.query(Wallet)\
+        .filter(Wallet.user_id == user.id)\
+        .offset(offset)\
+        .limit(limit)\
+        .all()
 
+    return wallet
 
 @router.post("/", response_model=StandardResponse)
 async def create_wallet(
@@ -96,15 +103,3 @@ def delete_wallet(
     db.delete(wallet)
 
     return StandardResponse(message="Wallet deleted successfully")
-
-@router.get("/summary", response_model=WalletSummary)
-def wallet_summary(
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
-    wallets = db.query(Wallet).filter(Wallet.user_id == user.id).all()
-    
-    return WalletSummary(
-        total_wallets=len(wallets),
-        total_balance=sum(w.balance for w in wallets)
-    )
