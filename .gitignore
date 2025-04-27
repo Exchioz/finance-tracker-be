@@ -1,17 +1,13 @@
-# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Log files
 *.log
 
-# Env files
 .env
 
-# Virtual environments
 venv/
+app.zip
 
-# Git & docs
 .git/
