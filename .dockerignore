@@ -1,27 +1,23 @@
-# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Log files
 *.log
+.git
 
-# Env files
 .env
 
-# Virtual environments
 venv/
 
-# Docker-related (optional)
+app.zip
+
 docker-compose.yml
 Dockerfile
 
-# Git & docs
 .git/
 .gitignore
 README.md
 
-# DB dumps / backups
 *.sql
 *.sqlite

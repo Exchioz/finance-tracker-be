@@ -14,7 +14,7 @@ class WalletResponse(BaseModel):
 
 class WalletCreate(BaseModel):
     name: str
-    balance: Decimal= 0
+    balance: Decimal= Decimal("0.00")
     currency: str = "IDR"
     description: str | None = None
 

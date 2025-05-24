@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, Numeric, ForeignKey
@@ -12,8 +13,9 @@ class Wallet(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     name = Column(String(100), nullable=False)
-    balance = Column(Numeric(12, 2), default=0)
+    balance = Column(Numeric(12, 2), default=Decimal("0.00"))
     currency = Column(String(5), default="IDR")
     description = Column(String, nullable=True)
 
     user = relationship("User", back_populates="wallets")
+    transactions = relationship("Transaction", back_populates="wallet", cascade="all, delete")

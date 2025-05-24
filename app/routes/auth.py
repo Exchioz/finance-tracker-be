@@ -51,7 +51,7 @@ async def login_user(
     db_user = db.query(User).filter(User.email == user.email).first()
     
     if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
+        raise HTTPException(status_code=400, detail="Invalid email or password")
 
     token = create_access_token(data={"sub": str(db_user.id)})
 

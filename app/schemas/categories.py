@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from uuid import UUID
 
-from app.database.models.enums import CategoriesType
+from .enums import TransactionType
 
 class CategoryResponse(BaseModel):
     id: UUID
     name: str
-    type: CategoriesType
+    type: TransactionType
     description: str | None = None
 
     class Config:
@@ -14,10 +14,10 @@ class CategoryResponse(BaseModel):
 
 class CategoryCreate(BaseModel):
     name: str
-    type: CategoriesType
+    type: TransactionType
     description: str | None = None
 
 class CategoryUpdate(BaseModel):
     name: str | None = None
-    type: CategoriesType | None = None
+    type: TransactionType | None = None
     description: str | None = None

@@ -20,3 +20,4 @@ class User(Base):
 
     wallets = relationship("Wallet", back_populates="user", cascade="all, delete")
     categories = relationship("Category", back_populates="user", cascade="all, delete")
+    transactions = relationship("Transaction", back_populates="user", cascade="all, delete")
