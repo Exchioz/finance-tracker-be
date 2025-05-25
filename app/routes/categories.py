@@ -1,24 +1,29 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.schemas.categories import *
+from app.schemas import TransactionType
 from app.schemas.responses import StandardResponse
 from app.database.session import get_db
-from app.database.models import User, Category
 from app.routes.users import get_current_user
+from app.database.models import User, Category
 
 router = APIRouter()
 
 @router.get("/", response_model=list[CategoryResponse])
 async def get_categories(
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
+    user: User = Depends(get_current_user),
+    type: str | None = Query(None)
 ):
-    category = db.query(Category)\
-        .filter(Category.user_id == user.id)
+    query = db.query(Category).filter(Category.user_id == user.id)
+
+    if type and type.lower() in TransactionType._value2member_map_:
+        query = query.filter(Category.type == type.upper())
+    categories = query.all()
     
-    return category
+    return categories
 
 @router.post("/", response_model=StandardResponse)
 async def create_categories(

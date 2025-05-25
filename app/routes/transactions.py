@@ -36,12 +36,13 @@ def get_transactions(
             # Transaction.description,
             Transaction.date,
             Cat.name.label("category_name"),
-            Wal.name.label("wallet_name")
+            Wal.name.label("wallet_name"),
+            Wal.currency.label("wallet_currency"),
         )
         .join(Cat, Transaction.category_id == Cat.id)
         .join(Wal, Transaction.wallet_id == Wal.id)
         .filter(Transaction.user_id == user.id)
-        .order_by(Transaction.date.desc())
+        .order_by(Transaction.created_at.desc())
         .offset(offset)
         .limit(limit)
         .all()

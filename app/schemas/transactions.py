@@ -27,6 +27,7 @@ class TransactionResponse(BaseModel):
     date: datetime
     category_name: str
     wallet_name: str
+    wallet_currency: str
 
     class Config:
         from_attributes = True
