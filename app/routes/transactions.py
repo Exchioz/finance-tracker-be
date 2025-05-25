@@ -42,7 +42,7 @@ def get_transactions(
         .join(Cat, Transaction.category_id == Cat.id)
         .join(Wal, Transaction.wallet_id == Wal.id)
         .filter(Transaction.user_id == user.id)
-        .order_by(Transaction.created_at.desc())
+        .order_by(Transaction.date.desc())
         .offset(offset)
         .limit(limit)
         .all()
