@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.schemas.wallets import *
@@ -15,12 +15,14 @@ router = APIRouter()
 async def get_wallets(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
-    limit: int = 20,
-    offset: int = 0
+    page: int = Query(1, ge=1),
+    limit: int = Query(5, ge=1)
 ):
     """
     Get all wallets of the current user.
     """
+    offset = (page - 1) * limit
+    
     wallet = db.query(Wallet)\
         .filter(Wallet.user_id == user.id)\
         .offset(offset)\

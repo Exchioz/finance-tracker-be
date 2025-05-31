@@ -1,12 +1,14 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, aliased
+from sqlalchemy import func, cast, Date, or_, String, Integer
 
 from app.schemas.transactions import *
 from app.schemas.responses import StandardResponse
 from app.database.session import get_db
 from app.database.models import User, Transaction, Category, Wallet
 from app.routes.users import get_current_user
+from app.services.summary_info import query_transaction_summary
 
 router = APIRouter()
 
@@ -54,6 +56,15 @@ def get_transactions(
         limit=limit,
         total=total
     )
+
+@router.get("/summary", response_model=TransactionSummaryGroupedResponse)
+def get_transaction_summary_grouped(
+    filter: TransactionSummaryFilter = Depends(),
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    summary = query_transaction_summary(db=db, user_id=user.id, flt=filter)
+    return {"summary": summary}
 
 @router.post("/", response_model=StandardResponse)
 def create_transaction(

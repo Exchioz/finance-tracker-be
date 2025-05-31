@@ -1,6 +1,7 @@
 from decimal import Decimal
 from datetime import datetime
 from pydantic import BaseModel, Field
+from typing import List, Optional
 from datetime import datetime, timezone
 from uuid import UUID
 
@@ -55,3 +56,21 @@ class TransactionUpdate(BaseModel):
     date: datetime | None = None
     category_id: UUID | None = None
     wallet_id: UUID | None = None
+
+class TransactionSummaryItem(BaseModel):
+    period: str
+    total_income: float
+    total_expense: float
+    balance: float
+    income_count: int
+    expense_count: int
+
+class TransactionSummaryGroupedResponse(BaseModel):
+    summary: List[TransactionSummaryItem]
+
+class TransactionSummaryFilter(BaseModel):
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
+    category_id: Optional[UUID] = None
+    wallet_id: Optional[UUID] = None
+    group_by: Optional[str] = "month"
